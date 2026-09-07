@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>IBUKI 資料索引</title>
+<style>
+:root{
+  --ink:#1b2420; --ink2:#4d5a53; --ink3:#7d8a83;
+  --bg:#f6f7f5; --card:#fff; --line:#e2e7e3;
+  --accent:#2f5d50; --accent-soft:#e8f0ec;
+  --warn:#8a5a1f; --warn-soft:#fbf1e0;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;
+  color:var(--ink);background:var(--bg);line-height:1.7;
+  font-size:15px;padding:0 0 64px;
+}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ---------- 合言葉 ---------- */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+#gate .box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:34px 30px;max-width:420px;width:100%;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+#gate h1{font-size:19px;color:var(--accent);letter-spacing:.01em}
+#gate p{font-size:13px;color:var(--ink2);margin-top:10px;line-height:1.8}
+#gate .row{display:flex;gap:8px;margin-top:20px}
+#gate input{flex:1;min-width:0;font:inherit;padding:10px 12px;border:1px solid var(--line);
+  border-radius:7px;background:#fff}
+#gate input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+button{font:inherit;cursor:pointer;border:none;border-radius:7px;
+  background:var(--accent);color:#fff;padding:10px 18px;white-space:nowrap}
+button:hover{filter:brightness(1.08)}
+button[disabled]{opacity:.5;cursor:progress}
+#err{color:#a33;font-size:13px;margin-top:12px;min-height:1.2em}
+
+/* ---------- 本体 ---------- */
+#app{display:none}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:22px 0 18px;margin-bottom:22px}
+header h1{font-size:20px;color:var(--accent);letter-spacing:.01em}
+header .meta{font-size:12.5px;color:var(--ink3);margin-top:6px}
+header .meta b{color:var(--ink2);font-weight:600}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.tools input[type=search]{flex:1;min-width:200px;font:inherit;font-size:14px;padding:8px 12px;
+  border:1px solid var(--line);border-radius:7px;background:#fff}
+.tools input[type=search]:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#fff}
+.seg button{background:#fff;color:var(--ink2);padding:8px 13px;font-size:13px;border-radius:0}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 13px;
+  font-size:13px;color:var(--ink2);display:inline-flex;align-items:baseline;gap:6px}
+.chip .n{font-size:11.5px;color:var(--ink3)}
+.chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip[aria-pressed=true] .n{color:#cfe0d9}
+
+.count{font-size:13px;color:var(--ink3);margin-bottom:10px}
+
+/* 一覧 */
+.group{margin-bottom:26px}
+.group>h2{font-size:14px;color:var(--accent);padding-bottom:6px;margin-bottom:2px;
+  border-bottom:1.5px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+.group>h2 span{font-size:12px;color:var(--ink3);font-weight:400}
+ul{list-style:none}
+li.item{border-bottom:1px solid var(--line);padding:9px 2px;display:flex;gap:12px;align-items:baseline}
+li.item:hover{background:#fff}
+.date{font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--ink3);white-space:nowrap;flex:0 0 78px}
+.body{flex:1;min-width:0}
+.title{font-size:14px;line-height:1.55;word-break:break-word}
+.title a{text-decoration:none;border-bottom:1px solid transparent}
+.title a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.sub{font-size:11.5px;color:var(--ink3);margin-top:3px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag{border-radius:4px;padding:1px 6px;font-size:11px;line-height:1.6;white-space:nowrap}
+.tag.cat{background:var(--accent-soft);color:var(--accent)}
+.tag.ext{background:#eef0ee;color:var(--ink2);text-transform:uppercase;font-size:10.5px}
+.tag.b46{background:#e9eef6;color:#3a5580}
+.tag.bd{background:#fdf0e3;color:var(--warn)}
+.path{color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+
+/* 未登録リスト */
+details.ask{background:var(--warn-soft);border:1px solid #f0e0c4;border-radius:var(--radius);
+  padding:14px 18px;margin-top:30px}
+details.ask summary{cursor:pointer;font-size:14px;color:var(--warn);font-weight:600}
+details.ask p{font-size:12.5px;color:var(--ink2);margin:10px 0}
+details.ask li{font-size:12.5px;padding:3px 0;color:var(--ink2)}
+details.ask .date{flex:0 0 78px;display:inline-block}
+
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3);line-height:1.9}
+
+.empty{padding:40px 0;text-align:center;color:var(--ink3);font-size:14px}
+
+@media (max-width:600px){
+  body{font-size:14px}
+  .date{flex-basis:62px;font-size:11.5px}
+  .wrap{padding:0 14px}
+}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <h1>IBUKI（伊吹）プロジェクト　資料索引</h1>
+    <p>合言葉を入れると一覧が開きます。ファイル名をクリックすると、Googleドライブの原本がそのまま開きます。ダウンロードは要りません。</p>
+    <form class="row" id="f">
+      <input id="pw" type="password" placeholder="合言葉" autocomplete="current-password" autofocus>
+      <button type="submit" id="go">開く</button>
+    </form>
+    <div id="err"></div>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="wrap">
+      <h1>IBUKI（伊吹）プロジェクト　資料索引</h1>
+      <div class="meta" id="meta"></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="tools">
+      <input type="search" id="q" placeholder="資料名で絞り込む（例：回路、BOM、EIS、菌根菌）">
+      <div class="seg" role="group" aria-label="並び順">
+        <button id="sBy" aria-pressed="true">分野別</button>
+        <button id="sNew" aria-pressed="false">新しい順</button>
+        <button id="sOld" aria-pressed="false">古い順</button>
+      </div>
+    </div>
+
+    <div class="chips" id="chips"></div>
+    <div class="count" id="count"></div>
+    <div id="list"></div>
+
+    <details class="ask" id="askBox">
+      <summary></summary>
+      <p>台帳にはあるのに、共有ドライブに置かれていない資料です。<b>この行はリンクが張れません。</b>ドライブへ上げていただければ、翌日にはこの索引に載り、リンクから開けるようになります。</p>
+      <ul id="askList"></ul>
+    </details>
+
+    <footer id="foot"></footer>
+  </div>
+</div>
+
+<script>
+const BLOB = /*__BLOB__*/null;
+const BUILT_AT = /*__BUILT_AT__*/"";
+
+/* ---------- 復号 ---------- */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+async function unlock(pass){
+  const salt = b64(BLOB.kdf.salt), iv = b64(BLOB.iv), ct = b64(BLOB.ct);
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass),
+    'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    {name:'PBKDF2', salt, iterations:BLOB.kdf.iter, hash:BLOB.kdf.hash},
+    base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+  const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+$('#f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('#go'); btn.disabled = true; $('#err').textContent = '';
+  try {
+    const data = await unlock($('#pw').value);
+    sessionStorage.setItem('ibuki_pw', $('#pw').value);
+    render(data);
+  } catch (_) {
+    $('#err').textContent = '合言葉が違います。';
+    btn.disabled = false; $('#pw').select();
+  }
+});
+
+/* 同じタブで開き直したときは訊き直さない */
+(async () => {
+  const p = sessionStorage.getItem('ibuki_pw');
+  if (!p) return;
+  try { render(await unlock(p)); } catch (_) { sessionStorage.removeItem('ibuki_pw'); }
+})();
+
+/* ---------- 描画 ---------- */
+// 並び順。末尾2つは通常は伏せているが、9/7の束に入っていたものだけ例外的に載るので
+// チップにも出す（チップの合計と総数が食い違わないようにする）。
+const CAT_ORDER = ['技術仕様','学術文献','図版GIS','提案書','座組資料','制度・公募','読み物','その他',
+                   'やりとり','検証・レビュー'];
+let DATA, state = {sort:'cat', cats:new Set(), q:''};
+
+function render(data){
+  DATA = data;
+  $('#gate').style.display = 'none';
+  $('#app').style.display = 'block';
+
+  const n = data.rows.length;
+  const sync = data.last_sync ? `台帳の更新＝${esc(data.last_sync)}` : '';
+  $('#meta').innerHTML =
+    `共有ドライブの<b>${n}件</b>を分野と日付で並べたものです。`
+    + `　ページの作成＝${esc(BUILT_AT)}　${sync}`;
+
+  const chips = $('#chips');
+  chips.innerHTML = `<button class="chip" data-c="" aria-pressed="true">すべて <span class="n">${n}</span></button>`
+    + CAT_ORDER.filter(c => data.cats[c]).map(c =>
+        `<button class="chip" data-c="${esc(c)}" aria-pressed="false">${esc(c)} <span class="n">${data.cats[c]}</span></button>`
+      ).join('');
+  chips.addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    const c = b.dataset.c;
+    if (!c) state.cats.clear();
+    else { state.cats.has(c) ? state.cats.delete(c) : state.cats.add(c); }
+    [...chips.children].forEach(x =>
+      x.setAttribute('aria-pressed', x.dataset.c ? state.cats.has(x.dataset.c) : state.cats.size === 0));
+    draw();
+  });
+
+  const seg = {sBy:'cat', sNew:'new', sOld:'old'};
+  Object.keys(seg).forEach(id => $('#'+id).addEventListener('click', () => {
+    state.sort = seg[id];
+    Object.keys(seg).forEach(j => $('#'+j).setAttribute('aria-pressed', j === id));
+    draw();
+  }));
+
+  let t;
+  $('#q').addEventListener('input', e => {
+    clearTimeout(t);
+    t = setTimeout(() => { state.q = e.target.value.trim().toLowerCase(); draw(); }, 120);
+  });
+
+  /* Driveに無いもの */
+  const ask = data.ask || [];
+  $('#askBox').style.display = ask.length ? 'block' : 'none';
+  $('#askBox').querySelector('summary').textContent =
+    `共有ドライブに置かれていない資料　${ask.length}件`;
+  $('#askList').innerHTML = ask.map(a =>
+    `<li><span class="date">${esc(a.d)}</span> ${esc(a.t)}　<span class="tag cat">${esc(a.c)}</span></li>`).join('');
+
+  $('#foot').innerHTML =
+    `台帳の総件数 ${data.ledger_total} 件（重複と旧版を含む）／うち正本 ${data.canonical} 件。`
+    + `この索引には、正本のうち共有ドライブから開けるものを載せています。`
+    + `<br>メールでのやりとり・こちらの内部検証・知財の文書は載せていません。`
+    + `<br>資料は共有ドライブに置いていただくだけで、毎日夕方に自動で拾って台帳に載ります。`;
+
+  draw();
+}
+
+function match(r){
+  if (state.cats.size && !state.cats.has(r.c)) return false;
+  if (state.q && !(r.t.toLowerCase().includes(state.q) || r.c.includes(state.q))) return false;
+  return true;
+}
+
+function item(r){
+  const url = `https://drive.google.com/file/d/${r.id}/view`;
+  const tags = [`<span class="tag cat">${esc(r.c)}</span>`, `<span class="tag ext">${esc(r.e)}</span>`];
+  if (r.n46) tags.push(`<span class="tag b46">一覧表 No.${r.n46}</span>`);
+  if (r.bd)  tags.push(`<span class="tag bd">9/7の束</span>`);
+  if (r.vn)  tags.push(`<span class="path">他に${r.vn}版</span>`);
+  if (r.f)   tags.push(`<span class="path">${esc(r.f)}</span>`);
+  return `<li class="item"><span class="date">${esc(r.d)}</span><div class="body">`
+    + `<div class="title"><a href="${url}" target="_blank" rel="noopener">${esc(r.t)}</a></div>`
+    + `<div class="sub">${tags.join('')}</div></div></li>`;
+}
+
+function draw(){
+  const rows = DATA.rows.filter(match);
+  $('#count').textContent = `${rows.length} 件`
+    + (rows.length !== DATA.rows.length ? `（全 ${DATA.rows.length} 件中）` : '');
+  const list = $('#list');
+
+  if (!rows.length){ list.innerHTML = `<div class="empty">該当する資料がありません。</div>`; return; }
+
+  if (state.sort === 'cat'){
+    const g = {};
+    rows.forEach(r => (g[r.c] = g[r.c] || []).push(r));
+    const order = CAT_ORDER.filter(c => g[c]).concat(Object.keys(g).filter(c => !CAT_ORDER.includes(c)));
+    list.innerHTML = order.map(c => {
+      const rs = g[c].slice().sort((a,b) => b.d.localeCompare(a.d));
+      return `<section class="group"><h2>${esc(c)}<span>${rs.length}件</span></h2>`
+        + `<ul>${rs.map(item).join('')}</ul></section>`;
+    }).join('');
+  } else {
+    const rs = rows.slice().sort((a,b) =>
+      state.sort === 'new' ? b.d.localeCompare(a.d) : a.d.localeCompare(b.d));
+    list.innerHTML = `<section class="group"><ul>${rs.map(item).join('')}</ul></section>`;
+  }
+}
+</script>
+</body>
+</html>
