@@ -16,15 +16,22 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ITER = 250000;
-const PAYLOAD = process.env.IBUKI_PAYLOAD
-  || (function () {
-    try {
-      return JSON.parse(fs.readFileSync(path.join(__dirname, 'config.local.json'), 'utf8')).payloadPath;
-    } catch (e) {
-      console.error('[build] IBUKI_PAYLOAD が未設定です。環境変数か config.local.json の "payloadPath" を使ってください。');
-      process.exit(2);
-    }
-  })();
+// payload.json の場所。優先順は 環境変数 → config.local.json → このリポジトリの1つ上。
+// ★config.local.json は .gitignore 済みだが、**gitignore は Dropbox の同期を止めない**。
+//   梭のMacで書いた /Users/moriyamamotoki/... が会社PCへ降りてきて build が落ちた（2026-09-07）。
+//   そこで「書いてあるが、この端末には無いパス」は既定へ落とす。
+//   既定＝リポジトリの1つ上＝平文の payload.json の定位置。端末ごとの設定は要らなくなる。
+const FALLBACK = path.join(__dirname, '..', 'payload.json');
+const PAYLOAD = (function () {
+  if (process.env.IBUKI_PAYLOAD) return process.env.IBUKI_PAYLOAD;
+  try {
+    const p = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.local.json'), 'utf8')).payloadPath;
+    if (p && fs.existsSync(p)) return p;
+    if (p) console.error('[build] config.local.json の payloadPath がこの端末に無いので既定を使います:'
+                         + String.fromCharCode(10) + '        ' + p);
+  } catch (e) { /* 無ければ既定へ落とす */ }
+  return FALLBACK;
+})();
 const TEMPLATE = path.join(__dirname, 'template.html');
 const OUT = path.join(__dirname, 'index.html');
 
