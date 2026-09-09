@@ -1,0 +1,7 @@
+# この作業ツリーは Dropbox 配下にあり、Windows 2台と macOS 1台へ同じ実体が降りる。
+# 行末を決めないと、索引の中身が1文字も変わっていない日に全301行が差分に出る
+# （2026-09-09 実測：Windows席で保存した template.html/index.html が CRLF、HEAD は LF）。
+# build.js は template.html の行末をそのまま index.html へ引き継ぐため、
+# 1つの端末で CRLF になると以後の生成物すべてが別物として commit される。
+# 索引（インデックス）も作業ツリーも LF に固定する。
+* text=auto eol=lf
