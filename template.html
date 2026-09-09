@@ -143,7 +143,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
 
     <details class="ask" id="askBox">
       <summary></summary>
-      <p>台帳にはあるのに、共有ドライブに置かれていない資料です。<b>この行はリンクが張れません。</b>ドライブへ上げていただければ、翌日にはこの索引に載り、リンクから開けるようになります。</p>
+      <p>台帳にはあるのに、共有ドライブに置かれていない資料です。<b>この行はリンクが張れません。</b>メールの添付や、お預かりした資料など、いずれも当方の手元にあるものです。ドライブへの登録は当方で行います。</p>
       <ul id="askList"></ul>
     </details>
 
@@ -242,7 +242,7 @@ function render(data){
   const ask = data.ask || [];
   $('#askBox').style.display = ask.length ? 'block' : 'none';
   $('#askBox').querySelector('summary').textContent =
-    `共有ドライブに置かれていない資料　${ask.length}件`;
+    `共有ドライブに置かれていない資料（当方で対応）　${ask.length}件`;
   $('#askList').innerHTML = ask.map(a =>
     `<li><span class="date">${esc(a.d)}</span> ${esc(a.t)}　<span class="tag cat">${esc(a.c)}</span></li>`).join('');
 
